@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useCount, useDispatchCount } from '../components/Counter'
 
-const AboutPage = ({ context }) => {
+const AboutPage = ({ stuff }) => {
     const count = useCount()
     const dispatch = useDispatchCount()
 
@@ -18,7 +18,7 @@ const AboutPage = ({ context }) => {
     return (
         <>
             <h1>ABOUT</h1>
-            {context}
+            {stuff}
             <p>Counter: {count}</p>
             <button onClick={handleIncrease}>Increase</button>
             <button onClick={handleIncrease15}>Increase By 15</button>
@@ -32,6 +32,17 @@ const AboutPage = ({ context }) => {
 }
 
 export async function getServerSideProps(context: any) {
-    return { props: { context: JSON.stringify(Object.keys(context.req)) } }
+    try {
+      const res = await fetch('https://google.com');
+      const json = await res.text();
+      return {
+        props: {stuff: JSON.stringify(json)}
+      }
+    } catch (e) {
+      console.error('Err:', e);
+      return {
+       props: { stuff: JSON.stringify(e)}
+      }
+    }
 }
 export default AboutPage;
